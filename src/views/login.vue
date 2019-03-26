@@ -10,7 +10,7 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item prop="userPwd">
-                        <el-input type="password" v-model="ruleForm.userPwd" autocomplete="off" placeholder="password">
+                        <el-input type="password" v-model="ruleForm.userPwd" autocomplete="off" placeholder="password" @keyup.enter.native="submitForm('ruleForm')">
                             <template slot="prepend"><img class="loginimg" src="./../assets/image/pwd.png" /></template>
                         </el-input>
                     </el-form-item>
@@ -25,51 +25,48 @@
 </template>
 
 <script>
+  import axios from 'axios'
     export default {
         name: "login",
         data(){
-            var validateName = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入用户名'));
-                } else {
-                    callback();
-                }
-            };
-            var validatePwd = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入密码'));
-                } else {
-                    callback();
-                }
-            };
             return {
-              checked:true,
+                checked:true,
                 ruleForm: {
                     userName: '',
                     userPwd: '',
                 },
                 rules: {
                   userName: [
-                        { validator: validateName, trigger: 'blur' }
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                        { min: 5, max: 16, message: '用户名长度在 5 到 16 个字符', trigger: 'blur' }
                     ],
                   userPwd: [
-                        { validator: validatePwd, trigger: 'blur' }
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        { min: 5, max: 16, message: '密码长度在 5 到 16 个字符', trigger: 'blur' }
                     ]
                 }
             };
         },
         methods:{
+            //登录
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        console.log('success submit!!');
-                        this.$router.push({path:'/'});
+                        /*axios.post('/users/login',this.ruleForm).then((response)=>{
+                            if(response.data.status=='0'){
+                                this.$router.push({path:'/'});
+                            }else{
+
+                            }
+
+                        })*/
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
             },
+            //重置
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             }
