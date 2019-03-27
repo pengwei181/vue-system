@@ -1,8 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import home from '@/views/home'
-import error404 from '@/views/404'
-Vue.use(Router)
+
+Vue.use(Router);
+
+const home = ()=>import('@/views/home');
+const login = ()=>import('@/views/login');
+const error404 = ()=>import('@/views/404');
+const contentMain = ()=>import('@/views/contentMain');
+const abc = ()=>import('@/views/abc');
+
 
 export default new Router({
     routes: [
@@ -17,18 +23,18 @@ export default new Router({
             children:[
                 {
                     path:'/contentMain',
-                    component:()=>import('@/views/contentMain')
+                    component:contentMain
                 },
                 {
                     path:'/abc',
-                    component:()=>import('@/views/abc')
+                    component:abc
                 }
             ]
         },
         {
             path: '/login',
             name: 'login',
-            component:() => import('@/views/login')
+            component:login
         },
         {
             path: '/404',
