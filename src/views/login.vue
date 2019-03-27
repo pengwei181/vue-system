@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import storage from '../utils/storage'
   import axios from 'axios'
     export default {
         name: "login",
@@ -52,14 +53,15 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        /*axios.post('/users/login',this.ruleForm).then((response)=>{
+                        axios.post('/users/login',this.ruleForm).then((response)=>{
                             if(response.data.status=='0'){
+                                this.$message.success("登录成功!");
+                                storage.set('userName',response.data.result.userName);
                                 this.$router.push({path:'/'});
                             }else{
-
+                                this.$message.error(response.data.msg);
                             }
-
-                        })*/
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;

@@ -45,21 +45,30 @@
 
 <script>
   import eventBus from '../utils/eventBus'
+  import axios from 'axios'
     export default {
         name: "NavMenu",
         data(){
             return{
-                isCollapse: false
+                isCollapse: false,
+                menuData:[]
             }
         },
         created(){
             //收缩侧边栏
-            eventBus.$on('collapse',val=>this.isCollapse=val)
+            eventBus.$on('collapse',val=>this.isCollapse=val);
+            axios.get('/menu').then((response)=>{
+                if(response.data.status==0){
+                    this.menuData=response.data.result;
+                }
+            });
+
 
         },
         methods: {
             handleOpen(key, keyPath) {
                 console.log(key, keyPath);
+                console.log(this.$router.options.routes)
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);

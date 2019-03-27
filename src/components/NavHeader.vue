@@ -2,11 +2,11 @@
     <div class="headerbox clearfix">
         <i class="el-icon-menu fl" @click="collapseChage"></i>
         <div class="headerlogo fl"><span>后台管理系统</span></div>
-        <el-dropdown class="headername fr">
-            <span class="el-dropdown-link">admin<i class="el-icon-caret-bottom el-icon--right"></i></span>
+        <el-dropdown class="headername fr" @command="handleCommand">
+            <span class="el-dropdown-link">{{userName}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>我的信息</el-dropdown-item>
-                <el-dropdown-item divided>退出登录</el-dropdown-item>
+                <el-dropdown-item command="0">我的信息</el-dropdown-item>
+                <el-dropdown-item divided command="1">退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
         <div class="headerimg fr"><img src="./../assets/image/user.png"/></div>
@@ -15,11 +15,19 @@
 
 <script>
     import eventBus from '../utils/eventBus'
+    import storage from '../utils/storage'
+    import axios from 'axios'
     export default {
         name: "NavHeader",
         data(){
             return{
-                collapse:false
+                collapse:false,
+                name:"admin"
+            }
+        },
+        computed:{
+            userName(){
+                return storage.get('userName') ? storage.get('userName') : this.name
             }
         },
         methods:{
@@ -27,6 +35,24 @@
             collapseChage(){
                 this.collapse=!this.collapse;
                 eventBus.$emit('collapse',this.collapse)
+            },
+            //下拉菜单触发事件
+            handleCommand(command){
+                if(command==1){//登出
+                    this.logout();
+                }
+            },
+            //登出
+            logout(){
+                axios.get('/users/logout').then((response)=>{
+                    if (response.data.status==0){
+                        storage.remove('userName');
+                        this.$message.success("退出登录成功!");
+                        this.$router.push({path:'/login'});
+                    }else{
+                        this.$message.error("退出登录失败!");
+                    }
+                });
             }
         },
         mounted(){
