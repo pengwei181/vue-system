@@ -22,7 +22,7 @@
         data(){
             return{
                 collapse:false,
-                name:"admin"
+                name:"杨鹏飞"
             }
         },
         computed:{
@@ -49,18 +49,28 @@
                         storage.remove('userName');
                         this.$message.success("退出登录成功!");
                         this.$router.push({path:'/login'});
-                    }else{
-                        this.$message.error("退出登录失败!");
                     }
                 });
+            },
+            //checklogin
+            checklogin(){
+                axios.get('/users/checklogin').then((response)=>{
+                    if(response.data.status=='0'){
+                        storage.set('userName',response.data.result);
+                    }else{
+                        storage.remove('userName');
+                        this.$router.push({path:'/login'});
+                    }
+                });
+
             }
         },
         mounted(){
             //判断屏幕小于1500时收缩侧边栏
             if(document.body.clientWidth<1500){
                 this.collapseChage();
-
             }
+            this.checklogin();
         }
     }
 </script>

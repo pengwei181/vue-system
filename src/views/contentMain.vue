@@ -1,6 +1,7 @@
 <template>
     <div class="contentMain">
         This is a Homepage.
+        <input >
     </div>
 </template>
 
