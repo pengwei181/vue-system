@@ -1,33 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import storage from '../utils/storage'
 Vue.use(Router);
-
-const home = ()=>import('@/views/home');
-const login = ()=>import('@/views/login');
-const error404 = ()=>import('@/views/404');
-const contentMain = ()=>import('@/views/contentMain');
-const userControl = ()=>import('@/views/userControl');
-const userEmail = ()=>import('@/views/userEmail');
-const userName = ()=>import('@/views/userName');
-const userPwd = ()=>import('@/views/userPwd');
-const userok = ()=>import('@/views/userok');
-const message = ()=>import('@/views/message');
-const location = ()=>import('@/views/location');
-const integral = ()=>import('@/views/integral');
-const department = ()=>import('@/views/department');
-const datatime = ()=>import('@/views/datatime');
-const contentControl = ()=>import('@/views/contentControl');
-const comment = ()=>import('@/views/comment');
-const collect = ()=>import('@/views/collect');
-const classify = ()=>import('@/views/classify');
-const article = ()=>import('@/views/article');
-
-
-
-
-
-export default new Router({
+const router =  new Router({
+    mode: 'history',
     routes: [
         {
             path: '/',
@@ -36,85 +12,83 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: home,
+            component: ()=>import('@/views/home'),
             children:[
                 {
                     path:'/contentMain',
-                    component:contentMain,
+                    component:()=>import('@/views/contentMain'),
                     meta:{title:"系统首页"}
                 },
                 {
                     path:'/userControl',
-                    component:userControl,
                     meta:{title:"用户管理"}
                 },
                 {
                   path:'/userName',
-                  component:userName,
+                  component:()=>import('@/views/userName'),
                   meta:{title:"账号管理"}
                 },
                 {
                   path:'/userEmail',
-                  component:userEmail,
+                  component:()=>import('@/views/userEmail'),
                   meta:{title:"邮件管理"}
                 },
                 {
                   path:'/userPwd',
-                  component:userPwd,
+                  component:()=>import('@/views/userPwd'),
                   meta:{title:"密码管理"}
                 },
                 {
                   path:'/userok',
-                  component:userok,
+                  component:()=>import('@/views/userok'),
                   meta:{title:"权限管理"}
                 },
                 {
                   path:'/message',
-                  component:message,
+                  component:()=>import('@/views/message'),
                   meta:{title:"消息管理"}
                 },{
                   path:'/location',
-                  component:location,
+                  component:()=>import('@/views/location'),
                 meta:{title:"位置管理"}
                 },
                 {
                   path:'/integral',
-                  component:integral,
+                  component:()=>import('@/views/integral'),
                   meta:{title:"积分管理"}
                 },
                 {
                   path:'/department',
-                  component:department,
+                  component:()=>import('@/views/department'),
                   meta:{title:"部门管理"}
                 },
                 {
                   path:'/datatime',
-                  component:datatime,
+                  component:()=>import('@/views/datatime'),
                   meta:{title:"时间管理"}
                 },
                 {
                   path:'/contentControl',
-                  component:contentControl,
                   meta:{title:"内容管理"}
                 },
                 {
                   path:'/comment',
-                  component:comment,
+                  component:()=>import('@/views/comment'),
                   meta:{title:"评论管理"}
                 },
                 {
                   path:'/collect',
-                  component:collect,
+                  component:()=>import('@/views/collect'),
                   meta:{title:"收藏管理"}
                 },
                 {
                   path:'/classify',
-                  component:classify,
+                  component:()=>import('@/views/classify'),
                   meta:{title:"分类管理"}
                 },
                 {
                   path:'/article',
-                  component:article,
+                  component:()=>import('@/views/article'),
                   meta:{title:"文章管理"}
                 }
             ]
@@ -122,12 +96,12 @@ export default new Router({
         {
             path: '/login',
             name: 'login',
-            component:login
+            component:()=>import('@/views/login')
         },
         {
             path: '/404',
             name:'404',
-            component:error404
+            component: ()=>import('@/views/404')
         },
         {
             path: '*',
@@ -135,4 +109,17 @@ export default new Router({
         }
 
     ]
-})
+});
+//使用钩子函数对路由进行权限跳转
+router.beforeEach((to,from,next)=>{
+    const userName=storage.get('userName');
+    //判断用户没登陆跳回login，登录的不能跳回login
+    if(!userName && to.path!=='/login'){
+        next('/login');
+    }else if(userName && to.path=='/login'){
+        next('/')
+    }else{
+      next()
+    }
+});
+export default router;

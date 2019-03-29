@@ -1,26 +1,22 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
+import storage from '../utils/storage'
 const state={
-    token:'Jock'
+    token:storage.get('token')
 };
 const getters={
-    nickName(state){
-        return state.token;
-    }
+   /* nickName:state=>state.token*/
 };
 const mutations={
-    createName(state){
-        state.token='Maiock';
-    },
-    updateName(state,sum){
-        state.token=sum;
+    updateToken(state,data){
+        state.token=data
     }
 };
 const actions={
-    updatenewName(context,sum){
+    /*updatenewName(context,sum){
         context.commit('updateName',sum);
-    }
+    }*/
 };
 const store = new Vuex.Store({state,getters,mutations,actions});
 export default store;

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import storage from '../utils/storage'
 //创建axios实例
 var instance = axios.create({timeout:1000*12});
 //设置post请求头
@@ -36,6 +37,7 @@ instance.interceptors.response.use(
             // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
             // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
             //this.$store.commit('changeNetwork', false);
+            this.$router.push({path:'/404'});
         }
     }
 );
@@ -47,12 +49,44 @@ const errorHandle = (status,other)=>{
     //状态码判断
     switch (status) {
         //401:未登录状态，跳转登录页
-        case 401:break;
+        case 401:
+            toLogin();
+            break;
         // 403 token过期, 清除token并跳转登录页
-        case 403:break;
+        case 403:
+            tip('登录过期，请重新登录!');
+            storage.remove('token');
+            this.$store.commit('updateToken',null);
+            setTimeout(()=>{
+                toLogin();
+            },1000);
+            break;
         // 404请求不存在
-        case 404:break;
+        case 404:
+            this.$router.push({path:'/404'});
+            break;
         default:console.log(other);
     }
+};
+/**
+ * 跳转登录页
+ * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
+ */
+const toLogin = () => {
+    this.$router.replace({
+        path: '/login',
+        query: {
+            redirect: this.$router.currentRoute.fullPath
+        }
+    });
+    console.log("即将返回的路由:"+this.$router.currentRoute.fullPath)
+};
+//提示函数
+const tip = msg=>{
+    this.$message({
+        message: msg,
+        type: 'warning',
+        duration:1500
+    });
 };
 export default instance;

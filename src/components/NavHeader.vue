@@ -22,12 +22,11 @@
         data(){
             return{
                 collapse:false,
-                name:"杨鹏飞"
             }
         },
         computed:{
             userName(){
-                return storage.get('userName') ? storage.get('userName') : this.name
+                return storage.get('userName')
             }
         },
         methods:{
@@ -62,7 +61,6 @@
                         this.$router.push({path:'/login'});
                     }
                 });
-
             }
         },
         mounted(){
@@ -70,7 +68,7 @@
             if(document.body.clientWidth<1500){
                 this.collapseChage();
             }
-            this.checklogin();
+            //this.checklogin();
         }
     }
 </script>

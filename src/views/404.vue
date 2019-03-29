@@ -1,7 +1,7 @@
 <template>
     <div class="err-page">
         <div class="err-code">4<span>0</span>4</div>
-        <div class="err-desc">啊哦~ 你所访问的页面不存在~</div>
+        <div class="err-desc">啊哦~ 你所访问的资源不存在~</div>
         <div class="err-box">
             <router-link to="/"><el-button type="primary">返回首页</el-button></router-link>
             <el-button type="primary" class="err-btn" @click="goBack">返回上一页</el-button>
